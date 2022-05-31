@@ -1,7 +1,17 @@
 import React from "react";
+import { useSelector } from "react-redux";
 
 const TotalCompleteItems = () => {
-  return <h4 className="mt-3">Total Complete Items: 5</h4>;
+  const { data } = useSelector((state) => state.todo);
+  const completedTodo = data.filter((i) => {
+    return i.completed === true;
+  });
+
+  return (
+    <>
+      <h3> Todal Complete Item : {completedTodo.length}</h3>
+    </>
+  );
 };
 
 export default TotalCompleteItems;
