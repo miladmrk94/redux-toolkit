@@ -1,13 +1,15 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 
-export const asyncTodos = createAsyncThunk(
+export const asyncTodo = createAsyncThunk(
   "todo/asyncTodos",
   async (_, { rejectWithValue }) => {
     try {
-      const todo = await axios.get("http://localhost:3005/todos");
+      const todo = await axios.get("http://localhost:3006/todo");
+      console.log(todo);
       return todo.data;
     } catch (error) {
+      console.log(error);
       return rejectWithValue([], error);
     }
   }
@@ -20,11 +22,12 @@ const todoSlice = createSlice({
     loading: false,
     err: null,
   },
-
   reducers: {
     addTodo: (state, action) => {
-      const newData = { id: Date.now, title: action.payload, completed: false };
-      state.data.push(newData);
+      const titleTodo = action.payload;
+
+      const data = { id: Date.now(), title: titleTodo, completed: false };
+      state.data.push(data);
     },
     deleteTodo: (state, action) => {
       const id = action.payload;
@@ -33,28 +36,27 @@ const todoSlice = createSlice({
       });
       state.data = filter;
     },
-    completedTodo: (state, action) => {
+    completeTodo: (state, action) => {
       const id = action.payload;
-
-      const find = state.data.find((i) => {
+      const findItem = state.data.find((i) => {
         return i.id === id;
       });
-
-      find.completed = !find.completed;
+      findItem.completed = !findItem.completed;
     },
   },
+
   extraReducers: {
-    [asyncTodos.fulfilled]: (state, action) => {
+    [asyncTodo.fulfilled]: (state, action) => {
       return { ...state, data: action.payload, loading: false, err: null };
     },
-    [asyncTodos.pending]: (state, action) => {
+    [asyncTodo.pending]: (state, action) => {
       return { ...state, data: [], loading: true, err: null };
     },
-    [asyncTodos.rejected]: (state, action) => {
+    [asyncTodo.rejected]: (state, action) => {
       return { ...state, data: [], loading: false, err: action.error.message };
     },
   },
 });
 
-export const { addTodo, deleteTodo, completedTodo } = todoSlice.actions;
+export const { addTodo, deleteTodo, completeTodo } = todoSlice.actions;
 export default todoSlice.reducer;

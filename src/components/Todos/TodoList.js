@@ -1,37 +1,30 @@
 import React, { useEffect } from "react";
-import TodoItem from "./TodoItem";
-import { useSelector, useDispatch } from "react-redux";
 import {
-  asyncTodos,
-  completedTodo,
+  asyncTodo,
+  completeTodo,
   deleteTodo,
 } from "../../features/todo/todoSlice";
+import TodoItem from "./TodoItem";
+import { useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 
 const TodoList = () => {
-  // const todos = [
-  //   { id: 1, title: "todo1", completed: false },
-  //   { id: 2, title: "todo2", completed: false },
-  //   { id: 3, title: "todo3", completed: true },
-  //   { id: 4, title: "todo4", completed: false },
-  //   { id: 5, title: "todo5", completed: false },
-  // ];
-
-  const { data, loading, err } = useSelector((state) => state.todo);
-  console.log(data, err);
+  const { loading, data, err } = useSelector((state) => state.todo);
+  console.log(data);
   const dispatch = useDispatch();
 
   const deleteHandler = (id) => {
     dispatch(deleteTodo(id));
   };
   const checkHandler = (id) => {
-    dispatch(completedTodo(id));
+    dispatch(completeTodo(id));
   };
 
   useEffect(() => {
-    dispatch(asyncTodos());
+    dispatch(asyncTodo());
   }, []);
 
-  const handlerAsyncReq = () => {
+  const dataHandler = () => {
     if (data && !loading && !err) {
       return data.map((todo) => (
         <TodoItem
@@ -51,7 +44,7 @@ const TodoList = () => {
     }
   };
 
-  return <ul className="list-group">{handlerAsyncReq()}</ul>;
+  return <ul className="list-group">{dataHandler()}</ul>;
 };
 
 export default TodoList;

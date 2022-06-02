@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "server": "json-server --p 3005 --watch db.json"
+    "server": "json-server --p 3006 --watch db.json"
   },
   "keywords": [],
   "author": "",
