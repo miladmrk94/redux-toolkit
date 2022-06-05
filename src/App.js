@@ -5,7 +5,7 @@ import TodoList from "./components/Todos/TodoList";
 import TotalCompleteItems from "./components/Todos/TotalCompleteTodo";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { Provider } from "react-redux";
-import store from "./features/store";
+import store from "./redux/store";
 
 function App() {
   return (

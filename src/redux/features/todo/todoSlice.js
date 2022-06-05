@@ -2,14 +2,12 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 
 export const asyncTodo = createAsyncThunk(
-  "todo/asyncTodos",
+  "todo/asyncTodo",
   async (_, { rejectWithValue }) => {
     try {
-      const todo = await axios.get("http://localhost:3006/todo");
-      console.log(todo);
-      return todo.data;
+      const items = await axios.get("http://localhost:3006/todo");
+      return items.data;
     } catch (error) {
-      console.log(error);
       return rejectWithValue([], error);
     }
   }
@@ -24,27 +22,25 @@ const todoSlice = createSlice({
   },
   reducers: {
     addTodo: (state, action) => {
-      const titleTodo = action.payload;
-
-      const data = { id: Date.now(), title: titleTodo, completed: false };
-      state.data.push(data);
+      const title = action.payload;
+      const todo = { id: Date.now(), title: title, completed: false };
+      state.data.push(todo);
     },
     deleteTodo: (state, action) => {
       const id = action.payload;
-      const filter = state.data.filter((i) => {
+      const filterTodo = state.data.filter((i) => {
         return i.id !== id;
       });
-      state.data = filter;
+      state.data = filterTodo;
     },
     completeTodo: (state, action) => {
       const id = action.payload;
-      const findItem = state.data.find((i) => {
+      const find = state.data.find((i) => {
         return i.id === id;
       });
-      findItem.completed = !findItem.completed;
+      find.completed = !find.completed;
     },
   },
-
   extraReducers: {
     [asyncTodo.fulfilled]: (state, action) => {
       return { ...state, data: action.payload, loading: false, err: null };
@@ -53,7 +49,7 @@ const todoSlice = createSlice({
       return { ...state, data: [], loading: true, err: null };
     },
     [asyncTodo.rejected]: (state, action) => {
-      return { ...state, data: [], loading: false, err: action.error.message };
+      return { ...state, data: [], loading: false, err: action.error };
     },
   },
 });

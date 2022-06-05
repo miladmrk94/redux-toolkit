@@ -1,18 +1,16 @@
 import React, { useEffect } from "react";
+
+import TodoItem from "./TodoItem";
+import { useSelector, useDispatch } from "react-redux";
 import {
   asyncTodo,
   completeTodo,
   deleteTodo,
-} from "../../features/todo/todoSlice";
-import TodoItem from "./TodoItem";
-import { useSelector } from "react-redux";
-import { useDispatch } from "react-redux";
+} from "../../redux/features/todo/todoSlice";
 
 const TodoList = () => {
-  const { loading, data, err } = useSelector((state) => state.todo);
-  console.log(data);
+  const { data, loading, err } = useSelector((state) => state.todo);
   const dispatch = useDispatch();
-
   const deleteHandler = (id) => {
     dispatch(deleteTodo(id));
   };
@@ -20,29 +18,32 @@ const TodoList = () => {
     dispatch(completeTodo(id));
   };
 
-  useEffect(() => {
-    dispatch(asyncTodo());
-  }, []);
-
   const dataHandler = () => {
-    if (data && !loading && !err) {
-      return data.map((todo) => (
-        <TodoItem
-          key={todo.id}
-          deleteHandler={() => deleteHandler(todo.id)}
-          title={todo.title}
-          completed={todo.completed}
-          checkHandler={() => checkHandler(todo.id)}
-        />
-      ));
+    if (data.length > 0) {
+      return data.map((i) => {
+        return (
+          <TodoItem
+            key={i.id}
+            deleteHandler={() => deleteHandler(i.id)}
+            title={i.title}
+            completed={i.completed}
+            checkHandler={() => checkHandler(i.id)}
+          />
+        );
+      });
     }
     if (loading) {
-      return <h2>Loading....</h2>;
+      return <h3>loading....</h3>;
     }
     if (err) {
-      return <h3 className="alert-danger">{err}</h3>;
+      return <h3>{err.message}</h3>;
     }
   };
+
+  useEffect(() => {
+    const items = dispatch(asyncTodo());
+    console.log(items);
+  }, []);
 
   return <ul className="list-group">{dataHandler()}</ul>;
 };
