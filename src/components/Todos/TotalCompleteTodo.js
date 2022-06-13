@@ -3,10 +3,13 @@ import { useSelector } from "react-redux";
 
 const TotalCompleteItems = () => {
   const { data } = useSelector((state) => state.todo);
+  const filter = data.filter((i) => {
+    return i.completed === true;
+  });
 
   return (
     <>
-      <h3 className="mt-3"> Total Complete Item :{data.length} </h3>
+      <h3 className="mt-3"> Total Complete Item :{filter.length} </h3>
     </>
   );
 };
