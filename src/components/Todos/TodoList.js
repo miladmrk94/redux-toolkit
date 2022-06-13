@@ -5,17 +5,19 @@ import { useSelector, useDispatch } from "react-redux";
 import {
   asyncTodo,
   completeTodo,
+  deleteAsyncTodo,
   deleteTodo,
+  completeAsyncTodo,
 } from "../../redux/features/todo/todoSlice";
 
 const TodoList = () => {
   const { data, loading, err } = useSelector((state) => state.todo);
   const dispatch = useDispatch();
   const deleteHandler = (id) => {
-    dispatch(deleteTodo(id));
+    dispatch(deleteAsyncTodo(id));
   };
   const checkHandler = (id) => {
-    dispatch(completeTodo(id));
+    dispatch(completeAsyncTodo(id));
   };
 
   const dataHandler = () => {

@@ -13,6 +13,60 @@ export const asyncTodo = createAsyncThunk(
   }
 );
 
+export const addAsyncTodo = createAsyncThunk(
+  "todo/addAsyncTodo",
+  async (payload, { rejectWithValue }) => {
+    try {
+      console.log(payload);
+      const items = await axios.post("http://localhost:3006/todo", {
+        id: Date.now(),
+        title: payload,
+        completed: false,
+      });
+      console.log(items.data);
+      return items.data;
+    } catch (error) {
+      return rejectWithValue([], error);
+    }
+  }
+);
+
+export const completeAsyncTodo = createAsyncThunk(
+  "todo/completeAsyncTodo",
+  async (payload, { rejectWithValue }) => {
+    try {
+      console.log(payload);
+      const items = await axios.get(`http://localhost:3006/todo/`);
+      console.log(items.data);
+      const find = items.data.find((i) => {
+        return i.id === payload;
+      });
+      find.completed = !find.completed;
+      return find;
+    } catch (error) {
+      return rejectWithValue([], error);
+    }
+  }
+);
+
+export const deleteAsyncTodo = createAsyncThunk(
+  "todo/deleteAsyncTodo",
+  async (payload, { rejectWithValue }) => {
+    try {
+      console.log(payload);
+      const items = await axios.get("http://localhost:3006/todo");
+
+      const filter = items.data.filter((i) => {
+        return i.id !== payload;
+      });
+      console.log(filter);
+      return filter;
+    } catch (error) {
+      return rejectWithValue([], error);
+    }
+  }
+);
+
 const todoSlice = createSlice({
   name: "todo",
   initialState: {
@@ -50,6 +104,18 @@ const todoSlice = createSlice({
     },
     [asyncTodo.rejected]: (state, action) => {
       return { ...state, data: [], loading: false, err: action.error };
+    },
+    [addAsyncTodo.fulfilled]: (state, action) => {
+      state.data.push(action.payload);
+    },
+    [addAsyncTodo.fulfilled]: (state, action) => {
+      state.data = action.payload;
+    },
+    [completeAsyncTodo.fulfilled]: (state, action) => {
+      const index = state.data.findIndex((i) => {
+        return i.id === action.payload.id;
+      });
+      state.data[index] = action.payload;
     },
   },
 });
